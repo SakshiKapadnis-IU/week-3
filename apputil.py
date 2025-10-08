@@ -1,96 +1,54 @@
-# apputil.py
+# test_app.py
 
+from apputil import fibonacci, to_binary, task_1, task_2, task_3, task_4
 import pandas as pd
 
-# -------------------------------
-# EXERCISE 1: Fibonacci (recursive)
-# -------------------------------
+def run_tests():
+    print("===== Testing fibonacci =====")
+    try:
+        print(f"fibonacci(0) = {fibonacci(0)}")  # Expected: 0
+        print(f"fibonacci(1) = {fibonacci(1)}")  # Expected: 1
+        print(f"fibonacci(5) = {fibonacci(5)}")  # Expected: 5
+        print(f"fibonacci(9) = {fibonacci(9)}")  # Expected: 34
+    except Exception as e:
+        print("fibonacci failed:", e)
 
-def fibonacci(n):
-    if n <= 0:
-        return 0
-    elif n == 1:
-        return 1
-    else:
-        return fibonacci(n - 1) + fibonacci(n - 2)
+    print("\n===== Testing to_binary =====")
+    try:
+        print(f"to_binary(0) = {to_binary(0)}")   # Expected: '0'
+        print(f"to_binary(2) = {to_binary(2)}")   # Expected: '10'
+        print(f"to_binary(12) = {to_binary(12)}") # Expected: '1100'
+    except Exception as e:
+        print("to_binary failed:", e)
 
+    print("\n===== Testing task_1 =====")
+    try:
+        cols = task_1()
+        print(f"task_1 columns (sorted by missing values): {cols}")
+    except Exception as e:
+        print("task_1 failed:", e)
 
-# -------------------------------
-# EXERCISE 2: Convert Integer to Binary (recursive)
-# -------------------------------
+    print("\n===== Testing task_2 =====")
+    try:
+        df_years = task_2()
+        print(df_years.head())
+        print(df_years.dtypes)
+    except Exception as e:
+        print("task_2 failed:", e)
 
-def to_binary(n):
-    if n < 0:
-        raise ValueError("Only non-negative integers are supported.")
-    if n < 2:
-        return str(n)
-    return to_binary(n // 2) + str(n % 2)
+    print("\n===== Testing task_3 =====")
+    try:
+        avg_age = task_3()
+        print(avg_age)
+    except Exception as e:
+        print("task_3 failed:", e)
 
+    print("\n===== Testing task_4 =====")
+    try:
+        top5_prof = task_4()
+        print(f"Top 5 professions: {top5_prof}")
+    except Exception as e:
+        print("task_4 failed:", e)
 
-# -------------------------------
-# EXERCISE 3: Bellevue Almshouse Dataset Tasks
-# -------------------------------
-
-try:
-    df_bellevue = pd.read_csv("df_bellevue.csv")
-except Exception:
-    df_bellevue = pd.DataFrame()
-
-
-def task_1():
-    """
-    Return list of column names sorted by missing values (least -> most).
-    Only fix gender column to correctly count missing values.
-    """
-    df = df_bellevue.copy()
-    if df.empty:
-        return []
-
-    # Fix gender column: count blank strings as missing
-    if 'gender' in df.columns:
-        df['gender'] = df['gender'].replace('', pd.NA)
-
-    # Sort columns by number of missing values
-    return df.isnull().sum().sort_values().index.tolist()
-
-
-def task_2():
-    """
-    Return a DataFrame:
-    - 'year': each year in dataset
-    - 'total_admissions': count per year
-    Sorted by 'year' ascending.
-    """
-    df = df_bellevue.copy()
-    if df.empty or 'year' not in df.columns:
-        return pd.DataFrame(columns=['year', 'total_admissions'])
-
-    result = df.groupby('year', as_index=False).size()
-    result.columns = ['year', 'total_admissions']
-    return result.sort_values('year').reset_index(drop=True)
-
-
-def task_3():
-    """
-    Return Series: index = gender, value = average age
-    """
-    df = df_bellevue.copy()
-    if df.empty or 'age' not in df.columns or 'gender' not in df.columns:
-        return pd.Series(dtype=float)
-
-    df['gender'] = df['gender'].replace('', pd.NA)
-    df_clean = df[df['age'].notnull() & df['gender'].notnull()]
-    return df_clean.groupby('gender')['age'].mean()
-
-
-def task_4():
-    """
-    Return list of top 5 most common professions in order of prevalence.
-    Ignore missing/empty entries.
-    """
-    df = df_bellevue.copy()
-    if df.empty or 'profession' not in df.columns:
-        return []
-
-    df_clean = df[df['profession'].notnull() & (df['profession'].astype(str).str.strip() != '')]
-    return df_clean['profession'].value_counts().head(5).index.tolist()
+if __name__ == "__main__":
+    run_tests()
