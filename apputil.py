@@ -1,6 +1,7 @@
 # ---------------------------------------
 # Exercise 1 – Fibonacci
 # ---------------------------------------
+import pandas as pd
 
 def fibonacci(n):
     """
@@ -30,13 +31,16 @@ def to_binary(n):
 # Exercise 3 – Each task receives df_bellevue as an argument
 # ------------------------------------------------------------------
 
-def task_1(df):
+def task_1(df=None):
     """
     Return a list of column names sorted by the number of missing values,
     from fewest missing to most missing.
 
     The dataframe should NOT be modified, so cleaning is done on a copy.
     """
+    if df is None:
+        return []
+
     df_copy = df.copy()
 
     if "gender" in df_copy.columns:
@@ -51,12 +55,15 @@ def task_1(df):
     return missing_counts.sort_values().index.tolist()
 
 
-def task_2(df):
+def task_2(df=None):
     """
     Return a DataFrame with two columns:
         year
         total_admissions  (number of rows for each year)
     """
+    if df is None:
+        return pd.DataFrame(columns=["year", "total_admissions"])
+
     return (
         df.groupby("year")
           .size()
@@ -64,7 +71,7 @@ def task_2(df):
     )
 
 
-def task_3(df):
+def task_3(df=None):
     """
     Return a Series where:
         index  = gender
@@ -72,6 +79,9 @@ def task_3(df):
 
     The dataframe must remain unchanged, so cleaning happens on a copy.
     """
+    if df is None:
+        return pd.Series(dtype=float)
+
     df_copy = df.copy()
     df_copy["gender"] = (
         df_copy["gender"]
@@ -83,13 +93,16 @@ def task_3(df):
     return df_copy.groupby("gender")["age"].mean()
 
 
-def task_4(df):
+def task_4(df=None):
     """
     Return a list containing the five most common professions,
     ordered from most to least frequent.
 
     If the profession column is missing, return an empty list.
     """
+    if df is None:
+        return []
+
     if "profession" not in df.columns:
         return []
 
