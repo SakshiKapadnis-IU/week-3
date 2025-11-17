@@ -3,7 +3,9 @@
 # ---------------------------------------
 
 def fibonacci(n):
-    """Return the nth Fibonacci number using recursion."""
+    """
+    Return the nth Fibonacci number using simple recursion.
+    """
     if n == 0:
         return 0
     if n == 1:
@@ -16,7 +18,9 @@ def fibonacci(n):
 # ---------------------------------------
 
 def to_binary(n):
-    """Convert an integer to its binary string representation using recursion."""
+    """
+    Convert a non-negative integer into a binary string using recursion.
+    """
     if n < 2:
         return str(n)
     return to_binary(n // 2) + str(n % 2)
@@ -28,21 +32,30 @@ def to_binary(n):
 
 def task_1(df):
     """
-    Return a list of column names sorted by number of missing values
-    (fewest missing → most missing). Fixes the gender column first.
-    """
-    if "gender" in df.columns:
-        df["gender"] = df["gender"].astype(str).str.strip().str.lower()
+    Return a list of column names sorted by the number of missing values,
+    from fewest missing to most missing.
 
-    missing_counts = df.isna().sum()
+    The dataframe should NOT be modified, so cleaning is done on a copy.
+    """
+    df_copy = df.copy()
+
+    if "gender" in df_copy.columns:
+        df_copy["gender"] = (
+            df_copy["gender"]
+            .astype(str)
+            .str.strip()
+            .str.lower()
+        )
+
+    missing_counts = df_copy.isna().sum()
     return missing_counts.sort_values().index.tolist()
 
 
 def task_2(df):
     """
-    Return a DataFrame with:
-      - year
-      - total_admissions (count of entries per year)
+    Return a DataFrame with two columns:
+        year
+        total_admissions  (number of rows for each year)
     """
     return (
         df.groupby("year")
@@ -53,21 +66,31 @@ def task_2(df):
 
 def task_3(df):
     """
-    Return a Series:
-      index  = gender
-      values = average age for that gender
+    Return a Series where:
+        index  = gender
+        values = average age for that gender
+
+    The dataframe must remain unchanged, so cleaning happens on a copy.
     """
-    df["gender"] = df["gender"].astype(str).str.strip().str.lower()
-    return df.groupby("gender")["age"].mean()
+    df_copy = df.copy()
+    df_copy["gender"] = (
+        df_copy["gender"]
+        .astype(str)
+        .str.strip()
+        .str.lower()
+    )
+
+    return df_copy.groupby("gender")["age"].mean()
 
 
 def task_4(df):
     """
-    Return a list of the five most common professions,
-    sorted from most to least frequent.
+    Return a list containing the five most common professions,
+    ordered from most to least frequent.
+
+    If the profession column is missing, return an empty list.
     """
     if "profession" not in df.columns:
-        print("profession column missing.")
         return []
 
     return df["profession"].value_counts().head(5).index.tolist()
