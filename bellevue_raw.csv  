@@ -1,4 +1,0 @@
-week-3/
-├─ apputil.py             <- Paste the final code here
-├─ bellevue_raw.csv       <- The CSV dataset (required by autograder)
-└─ (optional) app.py      <- Your main app, if needed
