@@ -1,9 +1,4 @@
 # ---------------------------------------
-# apputil.py
-# Week 3 Coding Exercise
-# ---------------------------------------
-
-# ---------------------------------------
 # Exercise 1 – Fibonacci
 # ---------------------------------------
 def fibonacci(n):
@@ -12,7 +7,7 @@ def fibonacci(n):
         return 0
     if n == 1:
         return 1
-    return fibonacci(n-1) + fibonacci(n-2)
+    return fibonacci(n - 1) + fibonacci(n - 2)
 
 
 # ---------------------------------------
@@ -29,21 +24,31 @@ def to_binary(n):
 # Exercise 3 – Bellevue tasks
 # ---------------------------------------
 def task_1(df):
-    """Return list of column names sorted by missing values (fewest → most)."""
+    """
+    Return a list of column names sorted by number of missing values (fewest → most).
+    Cleans 'gender' column before counting missing values.
+    """
     df_copy = df.copy()
     if "gender" in df_copy.columns:
         df_copy["gender"] = df_copy["gender"].astype(str).str.strip().str.lower()
-    missing_counts = df_copy.isna().sum()
-    return missing_counts.sort_values().index.tolist()
+    return df_copy.isna().sum().sort_values().index.tolist()
 
 
 def task_2(df):
-    """Return a DataFrame with columns: year, total_admissions."""
+    """
+    Return a DataFrame with two columns:
+        year
+        total_admissions (count of rows per year)
+    """
     return df.groupby("year").size().reset_index(name="total_admissions")
 
 
 def task_3(df):
-    """Return a Series: index=gender, values=average age."""
+    """
+    Return a Series:
+        index = gender
+        values = average age for that gender
+    """
     df_copy = df.copy()
     if "gender" in df_copy.columns:
         df_copy["gender"] = df_copy["gender"].astype(str).str.strip().str.lower()
@@ -51,7 +56,9 @@ def task_3(df):
 
 
 def task_4(df):
-    """Return a list of the 5 most common professions (most → least)."""
+    """
+    Return a list of the 5 most common professions (most → least frequent).
+    """
     if "profession" not in df.columns:
         return []
     return df["profession"].value_counts().head(5).index.tolist()
