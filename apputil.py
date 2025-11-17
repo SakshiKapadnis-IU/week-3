@@ -39,6 +39,8 @@ def task_1(df=None):
     The dataframe should NOT be modified, so cleaning is done on a copy.
     """
     if df is None:
+        df = globals().get("df_bellevue")
+    if df is None:
         return []
 
     df_copy = df.copy()
@@ -46,7 +48,7 @@ def task_1(df=None):
     if "gender" in df_copy.columns:
         df_copy["gender"] = (
             df_copy["gender"]
-            .astype(str)
+            .astype("string")
             .str.strip()
             .str.lower()
         )
@@ -61,6 +63,8 @@ def task_2(df=None):
         year
         total_admissions  (number of rows for each year)
     """
+    if df is None:
+        df = globals().get("df_bellevue")
     if df is None:
         return pd.DataFrame(columns=["year", "total_admissions"])
 
@@ -80,12 +84,14 @@ def task_3(df=None):
     The dataframe must remain unchanged, so cleaning happens on a copy.
     """
     if df is None:
+        df = globals().get("df_bellevue")
+    if df is None:
         return pd.Series(dtype=float)
 
     df_copy = df.copy()
     df_copy["gender"] = (
         df_copy["gender"]
-        .astype(str)
+        .astype("string")
         .str.strip()
         .str.lower()
     )
@@ -100,6 +106,8 @@ def task_4(df=None):
 
     If the profession column is missing, return an empty list.
     """
+    if df is None:
+        df = globals().get("df_bellevue")
     if df is None:
         return []
 
