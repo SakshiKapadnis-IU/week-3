@@ -2,6 +2,7 @@
 # Exercise 1 – Fibonacci
 # ---------------------------------------
 import pandas as pd
+import inspect
 
 def fibonacci(n):
     """
@@ -39,7 +40,7 @@ def task_1(df=None):
     The dataframe should NOT be modified, so cleaning is done on a copy.
     """
     if df is None:
-        df = globals().get("df_bellevue")
+        df = _get_df_bellevue()
     if df is None:
         return []
 
@@ -64,7 +65,7 @@ def task_2(df=None):
         total_admissions  (number of rows for each year)
     """
     if df is None:
-        df = globals().get("df_bellevue")
+        df = _get_df_bellevue()
     if df is None:
         return pd.DataFrame(columns=["year", "total_admissions"])
 
@@ -84,7 +85,7 @@ def task_3(df=None):
     The dataframe must remain unchanged, so cleaning happens on a copy.
     """
     if df is None:
-        df = globals().get("df_bellevue")
+        df = _get_df_bellevue()
     if df is None:
         return pd.Series(dtype=float)
 
@@ -107,7 +108,7 @@ def task_4(df=None):
     If the profession column is missing, return an empty list.
     """
     if df is None:
-        df = globals().get("df_bellevue")
+        df = _get_df_bellevue()
     if df is None:
         return []
 
@@ -115,3 +116,28 @@ def task_4(df=None):
         return []
 
     return df["profession"].value_counts().head(5).index.tolist()
+
+
+def _get_df_bellevue():
+    """Search for a variable named `df_bellevue` in several places:
+    - module globals (this file)
+    - caller frames (their globals and locals)
+    Return the first one found or None.
+    """
+    # check module globals first
+    if "df_bellevue" in globals():
+        return globals()["df_bellevue"]
+
+    # walk the stack to find df_bellevue in caller frames
+    for frame_info in inspect.stack():
+        frame = frame_info.frame
+        try:
+            if "df_bellevue" in frame.f_locals:
+                return frame.f_locals["df_bellevue"]
+            if "df_bellevue" in frame.f_globals:
+                return frame.f_globals["df_bellevue"]
+        finally:
+            # avoid reference cycles
+            del frame
+
+    return None
