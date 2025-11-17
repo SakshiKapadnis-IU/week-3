@@ -1,11 +1,20 @@
-# -----------------------------
-# Exercise 1: Fibonacci
-# -----------------------------
+try:
+    import pandas as pd
+except ImportError:
+    pd = None  # avoids terminal errors when running file directly
 
+
+def _load_data():
+    """Load Bellevue dataset internally. Works only when pandas is available."""
+    if pd is None:
+        raise ImportError("pandas is required to load the dataset in autograder.")
+    return pd.read_csv("bellevue_raw.csv")
+
+
+# -------------------------
+# Fibonacci
+# -------------------------
 def fibonacci(n):
-    """
-    Return the nth Fibonacci number using recursion.
-    """
     if n == 0:
         return 0
     if n == 1:
@@ -13,41 +22,31 @@ def fibonacci(n):
     return fibonacci(n - 1) + fibonacci(n - 2)
 
 
-# -----------------------------
-# Exercise 2: Convert integer to binary
-# -----------------------------
-
+# -------------------------
+# to_binary
+# -------------------------
 def to_binary(n):
-    """
-    Convert an integer to its binary string representation using recursion.
-    """
     if n < 2:
         return str(n)
     return to_binary(n // 2) + str(n % 2)
 
 
-# -----------------------------
-# Exercise 3 — The following functions
-# expect df_bellevue to be PASSED IN from app.py
-# -----------------------------
-
-def task_1(df):
-    """
-    Return column names sorted by fewest → most missing values.
-    Fixes the gender column first.
-    """
+# -------------------------
+# task_1
+# -------------------------
+def task_1():
+    df = _load_data()
     if "gender" in df.columns:
-        df["gender"] = df["gender"].astype(str).strip().str.lower()
+        df["gender"] = df["gender"].astype(str).str.strip().str.lower()
+    missing = df.isna().sum()
+    return missing.sort_values().index.tolist()
 
-    missing_counts = df.isna().sum()
-    return missing_counts.sort_values().index.tolist()
 
-
-def task_2(df):
-    """
-    Return a DataFrame with:
-        year, total_admissions
-    """
+# -------------------------
+# task_2
+# -------------------------
+def task_2():
+    df = _load_data()
     return (
         df.groupby("year")
           .size()
@@ -55,22 +54,28 @@ def task_2(df):
     )
 
 
-def task_3(df):
-    """
-    Return a Series:
-        index  = gender
-        values = average age
-    """
+# -------------------------
+# task_3
+# -------------------------
+def task_3():
+    df = _load_data()
     df["gender"] = df["gender"].astype(str).str.strip().str.lower()
     return df.groupby("gender")["age"].mean()
 
 
-def task_4(df):
-    """
-    Return list of 5 most common professions.
-    """
+# -------------------------
+# task_4
+# -------------------------
+def task_4():
+    df = _load_data()
     if "profession" not in df.columns:
-        print("Missing 'profession' column.")
+        print("profession column missing.")
         return []
-
     return df["profession"].value_counts().head(5).index.tolist()
+
+
+# -------------------------
+# Prevent execution when run directly
+# -------------------------
+if __name__ == "__main__":
+    print("apputil.py is not meant to be run directly.")
