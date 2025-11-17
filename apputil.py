@@ -98,7 +98,13 @@ def task_3(df=None):
         .str.lower()
     )
 
-    return df_copy.groupby("gender")["age"].mean()
+    s = df_copy.groupby("gender")["age"].mean()
+    try:
+        s.index = s.index.astype(object)
+    except Exception:
+        # fallback: convert index labels to plain Python strings
+        s.index = [str(i) for i in s.index]
+    return s
 
 
 def task_4(df=None):
