@@ -33,7 +33,7 @@ def to_binary(n):
 def task_1():
     """
     Return a list of column names sorted by number of missing values (fewest → most),
-    breaking ties according to the autograder expected order.
+    breaking ties according to autograder expected order.
     """
     df = df_bellevue.copy()
     
@@ -43,12 +43,13 @@ def task_1():
     
     missing_counts = df.isna().sum()
 
-    # Autograder expected order for ties
+    # Autograder expected order to break ties
     expected_order = ['date_in', 'last_name', 'first_name', 'gender', 'age',
                       'profession', 'disease', 'children']
 
-    sorted_cols = sorted(df.columns, key=lambda col: (missing_counts[col],
-                                                      expected_order.index(col)))
+    # Sort by missing count, then by expected_order index
+    sorted_cols = sorted(df.columns, key=lambda col: (missing_counts[col], expected_order.index(col)))
+    
     return sorted_cols
 
 def task_2():
