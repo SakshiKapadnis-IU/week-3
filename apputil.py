@@ -4,19 +4,24 @@ import pandas as pd
 url = "https://github.com/melaniewalsh/Intro-Cultural-Analytics/raw/master/book/data/bellevue_almshouse_modified.csv"
 df_bellevue = pd.read_csv(url)
 
-# ---------------------------------------
-# Exercise 1 – Fibonacci
-# ---------------------------------------
-def fibonacci(n):
+def task_1():
     """
-    Return the nth Fibonacci number using recursion.
-    Example: fibonacci(9) --> 34
+    Return a list of column names sorted by number of missing values
+    (fewest missing → most missing), breaking ties using the original column order.
     """
-    if n == 0:
-        return 0
-    if n == 1:
-        return 1
-    return fibonacci(n - 1) + fibonacci(n - 2)
+    df = df_bellevue.copy()
+    
+    # Clean gender column first
+    if "gender" in df.columns:
+        df["gender"] = df["gender"].astype(str).str.strip().str.lower()
+    
+    # Count missing values
+    missing_counts = df.isna().sum()
+    
+    # Sort by missing count, breaking ties with original column order
+    sorted_cols = sorted(df.columns, key=lambda col: (missing_counts[col], list(df.columns).index(col)))
+    
+    return sorted_cols
 
 
 # ---------------------------------------
