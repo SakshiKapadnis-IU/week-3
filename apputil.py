@@ -73,35 +73,16 @@ def task_3(df):
     """
     Return series with average age for each gender.
     """
-    # Fix messy gender column
-    df['gender'] = df['gender'].str.strip().str.lower()
-
-    avg_age_by_gender = (
-        df
-        .groupby('gender')['age']
-        .mean()
-    )
-
-    return avg_age_by_gender
+    df = df_bellevue.copy()
+    df['gender'] = df['gender'].astype(str).str.strip().str.lower()
+    return df.groupby('gender')['age'].mean()
 
 
 def task_4(df):
     """
     Return list of 5 most common professions.
     """
-    if 'profession' not in df.columns:
+    df = df_bellevue.copy()
+    if "profession" not in df.columns:
         return []
-
-    # Clean profession column
-    df['profession'] = df['profession'].str.strip().str.lower()
-
-    # Get most common professions
-    top_professions = (
-        df['profession']
-        .value_counts()
-        .head(5)
-        .index
-        .tolist()
-    )
-
-    return top_professions
+    return df["profession"].value_counts().head(5).index.tolist()
