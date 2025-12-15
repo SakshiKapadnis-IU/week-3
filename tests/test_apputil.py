@@ -5,16 +5,16 @@ import apputil
 
 
 def test_task_functions_no_args():
-    assert apputil.task_1() == []
+    assert isinstance(apputil.task_1(apputil.df_bellevue), list)
 
-    df2 = apputil.task_2()
+    df2 = apputil.task_2(apputil.df_bellevue)
     assert isinstance(df2, pd.DataFrame)
     assert list(df2.columns) == ["year", "total_admissions"]
 
-    s3 = apputil.task_3()
+    s3 = apputil.task_3(apputil.df_bellevue)
     assert isinstance(s3, pd.Series)
 
-    assert apputil.task_4() == []
+    assert isinstance(apputil.task_4(apputil.df_bellevue), list)
 
 
 def test_task_1_behavior():

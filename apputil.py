@@ -5,77 +5,100 @@ url = 'https://github.com/melaniewalsh/Intro-Cultural-Analytics/raw/master/book/
 df_bellevue = pd.read_csv(url)
 
 
-# ---------------------------------------
 # Exercise 1 – Fibonacci
-# ---------------------------------------
 def fibonacci(n):
-    """Return the nth Fibonacci number using recursion."""
+    """
+    Return the nth Fibonacci number using recursion.
+    """
+    # Base cases
     if n == 0:
         return 0
     if n == 1:
         return 1
+
+    # Recursive case
     return fibonacci(n - 1) + fibonacci(n - 2)
 
 
-# ---------------------------------------
 # Exercise 2 – Convert integer to binary
-# ---------------------------------------
 def to_binary(n):
-    """Convert a non-negative integer into a binary string using recursion."""
+    """
+    Convert an integer to its binary representation using recursion.
+    Returns a string.
+    """
+    # Base case
     if n < 2:
         return str(n)
+
+    # Recursive case
     return to_binary(n // 2) + str(n % 2)
 
 
-# ---------------------------------------
 # Exercise 3 – Bellevue Almshouse Tasks
-# ---------------------------------------
-def task_1():
+def task_1(df):
     """
-    Return a list of column names sorted by number of missing values (fewest → most),
-    breaking ties to match the autograder's expected order.
+    Return list of column names sorted by number of missing values.
     """
-    df = df_bellevue.copy()
-    if "gender" in df.columns:
-        df["gender"] = df["gender"].astype(str).str.strip().str.lower()
-    
-    missing_counts = df.isna().sum()
-    cols_sorted = missing_counts.sort_values().index.tolist()
+    # Fix messy gender column
+    df['gender'] = df['gender'].str.strip().str.lower()
 
-    expected_order = ['date_in', 'last_name', 'first_name', 'gender', 'age',
-                      'profession', 'disease', 'children']
-    
-    return sorted(cols_sorted, key=lambda x: expected_order.index(x))
+    # Count missing values
+    missing_counts = df.isnull().sum()
+
+    # Sort and return column names
+    return list(missing_counts.sort_values().index)
 
 
-def task_2():
+def task_2(df):
     """
-    Return a DataFrame with columns:
-        year: extracted from date_in
-        total_admissions: count of entries per year
+    Return dataframe with year and total admissions.
     """
-    df = df_bellevue.copy()
-    df['date_in'] = pd.to_datetime(df['date_in'], errors='coerce')
-    df['year'] = df['date_in'].dt.year
-    return df.groupby('year').size().reset_index(name='total_admissions')
+    if 'year' not in df.columns:
+        df['year'] = pd.to_datetime(df['date_in']).dt.year
+
+    admissions_by_year = (
+        df
+        .groupby('year')
+        .size()
+        .reset_index(name='total_admissions')
+    )
+
+    return admissions_by_year
 
 
-def task_3():
+def task_3(df):
     """
-    Return a Series with:
-        index = gender
-        values = average age for that gender
+    Return series with average age for each gender.
     """
-    df = df_bellevue.copy()
-    df['gender'] = df['gender'].astype(str).str.strip().str.lower()
-    return df.groupby('gender')['age'].mean()
+    # Fix messy gender column
+    df['gender'] = df['gender'].str.strip().str.lower()
+
+    avg_age_by_gender = (
+        df
+        .groupby('gender')['age']
+        .mean()
+    )
+
+    return avg_age_by_gender
 
 
-def task_4():
+def task_4(df):
     """
-    Return a list of the five most common professions, ordered most → least frequent.
+    Return list of 5 most common professions.
     """
-    df = df_bellevue.copy()
-    if "profession" not in df.columns:
+    if 'profession' not in df.columns:
         return []
-    return df["profession"].value_counts().head(5).index.tolist()
+
+    # Clean profession column
+    df['profession'] = df['profession'].str.strip().str.lower()
+
+    # Get most common professions
+    top_professions = (
+        df['profession']
+        .value_counts()
+        .head(5)
+        .index
+        .tolist()
+    )
+
+    return top_professions
