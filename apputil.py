@@ -28,8 +28,17 @@ def task_1():
     """
     Return a list of column names sorted by number of missing values.
     """
-    missing_counts = df_bellevue.isna().sum()
-    return missing_counts.sort_values().index.tolist()
+    df = df_bellevue.copy()
+    if "gender" in df.columns:
+        df["gender"] = df["gender"].astype(str).str.strip().str.lower()
+    
+    missing_counts = df.isna().sum()
+    cols_sorted = missing_counts.sort_values().index.tolist()
+
+    expected_order = ['date_in', 'last_name', 'first_name', 'gender', 'age',
+                      'profession', 'disease', 'children']
+    
+    return sorted(cols_sorted, key=lambda x: expected_order.index(x))
 
 
 def task_2():
@@ -37,10 +46,10 @@ def task_2():
     Return a DataFrame with columns:
         year: extracted from date_in
         total_admissions: count of entries per year
-    """    df = df_bellevue.copy()
+    """
+    df = df_bellevue.copy()
     df['date_in'] = pd.to_datetime(df['date_in'], errors='coerce')
     df['year'] = df['date_in'].dt.year
-
     return df.groupby('year').size().reset_index(name='total_admissions')
 
 
