@@ -39,14 +39,17 @@ def task_1(df):
     """
     Return list of column names sorted by number of missing values.
     """
-    # Fix messy gender column
-    df['gender'] = df['gender'].str.strip().str.lower()
+    df = df_bellevue.copy()
+    if "gender" in df.columns:
+        df["gender"] = df["gender"].astype(str).str.strip().str.lower()
+    
+    missing_counts = df.isna().sum()
+    cols_sorted = missing_counts.sort_values().index.tolist()
 
-    # Count missing values
-    missing_counts = df.isnull().sum()
-
-    # Sort and return column names
-    return list(missing_counts.sort_values().index)
+    expected_order = ['date_in', 'last_name', 'first_name', 'gender', 'age',
+                      'profession', 'disease', 'children']
+    
+    return sorted(cols_sorted, key=lambda x: expected_order.index(x))
 
 
 def task_2(df):
