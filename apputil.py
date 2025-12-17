@@ -28,7 +28,6 @@ def task_1():
     df = df_bellevue.copy()
     if "gender" in df.columns:
         df["gender"] = df["gender"].astype(str).str.strip().str.lower()
-
     missing_counts = df.isna().sum()
     return missing_counts.sort_values().index.tolist()
 
