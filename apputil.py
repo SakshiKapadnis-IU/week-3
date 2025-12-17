@@ -1,9 +1,8 @@
 import pandas as pd
 
-# Load the Bellevue Almshouse dataset
+# Load dataset
 url = 'https://github.com/melaniewalsh/Intro-Cultural-Analytics/raw/master/book/data/bellevue_almshouse_modified.csv'
 df_bellevue = pd.read_csv(url)
-
 
 # Exercise 1 – Fibonacci
 def fibonacci(n):
@@ -14,14 +13,12 @@ def fibonacci(n):
         return 1
     return fibonacci(n - 1) + fibonacci(n - 2)
 
-
 # Exercise 2 – Convert integer to binary
 def to_binary(n):
     """Convert a non-negative integer into a binary string using recursion."""
     if n < 2:
         return str(n)
     return to_binary(n // 2) + str(n % 2)
-
 
 # Exercise 3 – Bellevue Almshouse Tasks
 def task_1():
@@ -31,14 +28,9 @@ def task_1():
     df = df_bellevue.copy()
     if "gender" in df.columns:
         df["gender"] = df["gender"].astype(str).str.strip().str.lower()
-    
-    missing_counts = df.isna().sum()
-    cols_sorted = missing_counts.sort_values().index.tolist()
 
-    expected_order = ['date_in', 'last_name', 'first_name', 'gender', 'age',
-                      'profession', 'disease', 'children']
-    
-    return sorted(cols_sorted, key=lambda x: expected_order.index(x))
+    missing_counts = df.isna().sum()
+    return missing_counts.sort_values().index.tolist()
 
 
 def task_2():
