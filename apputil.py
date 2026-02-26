@@ -42,7 +42,15 @@ def task_2(df):
     """
     df = df.copy()
     if "year" not in df.columns:
-        print("Year column missing from dataset.")
+        if "date_in" in df.columns:
+            df["date_in"] = pd.to_datetime(df["date_in"], errors="coerce")
+            df["year"] = df["date_in"].dt.year
+            df = df[df["year"].notna()].copy()
+            # Make year integer dtype (tests expect integer years)
+            df["year"] = df["year"].astype(int)
+        else:
+            raise KeyError("Neither 'year' nor 'date_in' column found to derive year")
+
     admissions_by_year = df.groupby("year").size().reset_index(name="total_admissions")
     return admissions_by_year
 
